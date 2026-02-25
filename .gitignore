@@ -1,0 +1,11 @@
+# secrets / auth tokens
+credentials.json
+token.json
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store
