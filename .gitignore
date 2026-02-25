@@ -1,6 +1,7 @@
 # secrets / auth tokens
 credentials.json
 token.json
+processed.json
 
 # python
 __pycache__/

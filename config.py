@@ -1,18 +1,28 @@
-# Scopes:
-# - gmail.modify lets us add a label so we don't re-process emails
-SCOPES = ["https://www.googleapis.com/auth/gmail.modify"]
+SCOPES = [
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/calendar.events",
+]
 
 LABEL_NAME = "AutoCalendar/Reviewed"
+DEFAULT_TZ = "Asia/Dubai"   # change if needed
+CALENDAR_ID = "primary"
+
 MAX_RESULTS = 15
 
-# A simple query you can tweak.
-# - newer_than:14d keeps it recent
-# - -label:"AutoCalendar/Reviewed" prevents duplicates
+# No quizzes/exams/LMS:
 GMAIL_QUERY = (
-    'newer_than:14d '
+    "newer_than:14d "
     f'-label:"{LABEL_NAME}" '
-    '('
-    'workshop OR competition OR hackathon OR "register now" OR registration OR deadline OR '
-    'talk OR seminar OR webinar OR guest OR "limited spots" OR "sign up" OR submit OR submissions OR event'
-    ') '
+    "("
+    "workshop OR competition OR hackathon OR webinar OR seminar OR talk OR guest "
+    'OR "register" OR registration OR deadline OR submit OR submissions OR event '
+    'OR "limited spots" OR "sign up"'
+    ") "
+    "-(quiz OR exam OR midsem OR compre OR LMS OR answerkey OR \"seating arrangement\")"
 )
+
+# Only create events if extraction confidence is >= this
+MIN_CONFIDENCE = 0.70
+
+# reminders in minutes
+REMINDERS = [24 * 60, 2 * 60]

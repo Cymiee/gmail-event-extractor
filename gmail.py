@@ -1,5 +1,40 @@
 from googleapiclient.discovery import build
+import base64
 
+def _decode_b64(data: str) -> str:
+    if not data:
+        return ""
+    return base64.urlsafe_b64decode(data.encode("utf-8")).decode("utf-8", errors="replace")
+
+
+def read_message_full(service, user_id, msg_id):
+    """
+    Full message (headers + payload). We'll extract text/plain if possible.
+    """
+    return service.users().messages().get(userId=user_id, id=msg_id, format="full").execute()
+
+
+def extract_body_text(full_msg: dict) -> str:
+    payload = full_msg.get("payload", {})
+
+    # if no parts, body is directly here
+    if "parts" not in payload:
+        return _decode_b64(payload.get("body", {}).get("data", ""))
+
+    # walk parts to find text/plain (best) or text/html (fallback)
+    stack = list(payload.get("parts", []))
+    html_fallback = ""
+    while stack:
+        part = stack.pop(0)
+        mime = part.get("mimeType", "")
+        data = part.get("body", {}).get("data", "")
+        if mime == "text/plain" and data:
+            return _decode_b64(data)
+        if mime == "text/html" and data and not html_fallback:
+            html_fallback = _decode_b64(data)
+        stack.extend(part.get("parts", []))
+
+    return html_fallback
 
 def build_gmail_service(creds):
     return build("gmail", "v1", credentials=creds)
