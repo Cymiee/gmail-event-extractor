@@ -11,5 +11,8 @@ MAX_RESULTS = 15
 GMAIL_QUERY = (
     'newer_than:14d '
     f'-label:"{LABEL_NAME}" '
-    '(workshop OR competition OR quiz OR exam OR midsem OR compre OR deadline OR register)'
+    '('
+    'workshop OR competition OR hackathon OR "register now" OR registration OR deadline OR '
+    'talk OR seminar OR webinar OR guest OR "limited spots" OR "sign up" OR submit OR submissions OR event'
+    ') '
 )
