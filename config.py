@@ -4,7 +4,7 @@ SCOPES = [
 ]
 
 LABEL_NAME = "AutoCalendar/Reviewed"
-DEFAULT_TZ = "Asia/Dubai"   # change if needed
+DEFAULT_TZ = "Asia/Dubai"  # change if needed
 CALENDAR_ID = "primary"
 
 MAX_RESULTS = 15
@@ -16,9 +16,9 @@ GMAIL_QUERY = (
     "("
     "workshop OR competition OR hackathon OR webinar OR seminar OR talk OR guest "
     'OR "register" OR registration OR deadline OR submit OR submissions OR event '
-    'OR "limited spots" OR "sign up"'
+    'OR "limited spots" OR "sign up" OR date OR time OR venue'
     ") "
-    "-(quiz OR exam OR midsem OR compre OR LMS OR answerkey OR \"seating arrangement\")"
+    '-(quiz OR exam OR midsem OR compre OR LMS OR answerkey OR "seating arrangement")'
 )
 
 # Only create events if extraction confidence is >= this

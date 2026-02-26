@@ -13,8 +13,14 @@ from extractor import extract_event
 from store import load_store, save_store
 
 from config import (
-    SCOPES, LABEL_NAME, GMAIL_QUERY, MAX_RESULTS,
-    DEFAULT_TZ, CALENDAR_ID, MIN_CONFIDENCE, REMINDERS
+    SCOPES,
+    LABEL_NAME,
+    GMAIL_QUERY,
+    MAX_RESULTS,
+    DEFAULT_TZ,
+    CALENDAR_ID,
+    MIN_CONFIDENCE,
+    REMINDERS,
 )
 
 
@@ -44,13 +50,17 @@ def main():
         full_msg = read_message_full(gmail, user_id, msg_id)
         body = extract_body_text(full_msg)
 
-        extracted = extract_event(meta["subject"], body or meta["snippet"], default_tz=DEFAULT_TZ)
+        extracted = extract_event(
+            meta["subject"], body or meta["snippet"], default_tz=DEFAULT_TZ
+        )
         if not extracted:
             print(f"SKIP (no datetime): {meta['subject']}")
             continue
 
         if extracted.confidence < MIN_CONFIDENCE:
-            print(f"SKIP (low confidence {extracted.confidence:.2f}): {meta['subject']}")
+            print(
+                f"SKIP (low confidence {extracted.confidence:.2f}): {meta['subject']}"
+            )
             continue
 
         desc = ""

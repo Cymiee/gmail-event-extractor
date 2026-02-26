@@ -1,17 +1,25 @@
 from googleapiclient.discovery import build
 import base64
 
+
 def _decode_b64(data: str) -> str:
     if not data:
         return ""
-    return base64.urlsafe_b64decode(data.encode("utf-8")).decode("utf-8", errors="replace")
+    return base64.urlsafe_b64decode(data.encode("utf-8")).decode(
+        "utf-8", errors="replace"
+    )
 
 
 def read_message_full(service, user_id, msg_id):
     """
     Full message (headers + payload). We'll extract text/plain if possible.
     """
-    return service.users().messages().get(userId=user_id, id=msg_id, format="full").execute()
+    return (
+        service.users()
+        .messages()
+        .get(userId=user_id, id=msg_id, format="full")
+        .execute()
+    )
 
 
 def extract_body_text(full_msg: dict) -> str:
@@ -36,6 +44,7 @@ def extract_body_text(full_msg: dict) -> str:
 
     return html_fallback
 
+
 def build_gmail_service(creds):
     return build("gmail", "v1", credentials=creds)
 
@@ -49,22 +58,30 @@ def get_or_create_label_id(service, user_id, label_name):
         if lab["name"] == label_name:
             return lab["id"]
 
-    created = service.users().labels().create(
-        userId=user_id,
-        body={
-            "name": label_name,
-            "labelListVisibility": "labelShow",
-            "messageListVisibility": "show",
-        },
-    ).execute()
+    created = (
+        service.users()
+        .labels()
+        .create(
+            userId=user_id,
+            body={
+                "name": label_name,
+                "labelListVisibility": "labelShow",
+                "messageListVisibility": "show",
+            },
+        )
+        .execute()
+    )
 
     return created["id"]
 
 
 def search_message_ids(service, user_id, query, max_results=10):
-    resp = service.users().messages().list(
-        userId=user_id, q=query, maxResults=max_results
-    ).execute()
+    resp = (
+        service.users()
+        .messages()
+        .list(userId=user_id, q=query, maxResults=max_results)
+        .execute()
+    )
     return [m["id"] for m in resp.get("messages", [])]
 
 
@@ -72,12 +89,17 @@ def read_message_metadata(service, user_id, msg_id):
     """
     Reads just metadata so it's fast. (Subject/From/Date + snippet)
     """
-    msg = service.users().messages().get(
-        userId=user_id,
-        id=msg_id,
-        format="metadata",
-        metadataHeaders=["Subject", "From", "Date"],
-    ).execute()
+    msg = (
+        service.users()
+        .messages()
+        .get(
+            userId=user_id,
+            id=msg_id,
+            format="metadata",
+            metadataHeaders=["Subject", "From", "Date"],
+        )
+        .execute()
+    )
 
     headers = {h["name"]: h["value"] for h in msg.get("payload", {}).get("headers", [])}
 

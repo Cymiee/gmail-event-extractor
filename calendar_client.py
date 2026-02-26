@@ -17,7 +17,9 @@ def create_event(cal_service, calendar_id, event):
         "end": {"dateTime": event["end"].isoformat()},
         "reminders": {
             "useDefault": False,
-            "overrides": [{"method": "popup", "minutes": m} for m in event.get("reminders", [])],
+            "overrides": [
+                {"method": "popup", "minutes": m} for m in event.get("reminders", [])
+            ],
         },
     }
     return cal_service.events().insert(calendarId=calendar_id, body=body).execute()
