@@ -1,15 +1,19 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 SCOPES = [
     "https://www.googleapis.com/auth/gmail.modify",
     "https://www.googleapis.com/auth/calendar.events",
 ]
 
 LABEL_NAME = "AutoCalendar/Reviewed"
-DEFAULT_TZ = "Asia/Dubai"  # change if needed
-CALENDAR_ID = "primary"
+DEFAULT_TZ = os.getenv("DEFAULT_TZ", "Asia/Dubai")
+CALENDAR_ID = os.getenv("CALENDAR_ID", "primary")
+MAX_RESULTS = int(os.getenv("MAX_RESULTS", "15"))
+MIN_CONFIDENCE = float(os.getenv("MIN_CONFIDENCE", "0.70"))
 
-MAX_RESULTS = 15
-
-# No quizzes/exams/LMS:
 GMAIL_QUERY = (
     "newer_than:14d "
     f'-label:"{LABEL_NAME}" '
@@ -20,9 +24,6 @@ GMAIL_QUERY = (
     ") "
     '-(quiz OR exam OR midsem OR compre OR LMS OR answerkey OR "seating arrangement")'
 )
-
-# Only create events if extraction confidence is >= this
-MIN_CONFIDENCE = 0.70
 
 # reminders in minutes
 REMINDERS = [24 * 60, 2 * 60]
